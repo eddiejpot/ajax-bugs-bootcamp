@@ -1,0 +1,45 @@
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.bug-form-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  /* border-style: solid; */
+  border: solid rgb(46, 46, 46);
+}
+
+.bug-list-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  /* border-style: solid; */
+  border: solid rgb(255, 159, 159);
+}
+
+.bug-report-form > * {
+  display: block;
+  padding: 1rem;
+  margin: 1rem;
+  width: 100%;
+}
+
+.bug-list {
+  color: rgb(255, 87, 87);
+}
+
+.bug-list-single-bug {
+  border: solid rgb(255, 0, 0);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 0.2rem;
+}
