@@ -1,6 +1,7 @@
 import db from './models/index.mjs';
 
 // import your controllers here
+import initAuthController from './controllers/auth.mjs';
 import initBugsController from './controllers/bugs.mjs';
 import initFeaturesController from './controllers/features.mjs';
 
@@ -10,6 +11,10 @@ export default function bindRoutes(app) {
 
   const bugsController = initBugsController(db);
   const featuresController = initFeaturesController(db);
+  const authController = initAuthController(db);
+
+  // auth
+  app.get('/auth', authController.checkIfLoggedIn);
 
   // apis
   app.get('/api/features', featuresController.apiIndexFeatures);

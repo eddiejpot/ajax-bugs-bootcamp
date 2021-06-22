@@ -35,6 +35,9 @@
 
 .bug-list {
   color: rgb(255, 87, 87);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .bug-list-single-bug {

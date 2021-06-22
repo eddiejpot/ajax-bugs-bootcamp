@@ -1,6 +1,6 @@
 // db is an argument to this function so
 // that we can make db queries inside
-export default function initBugsController(db) {
+export default function initAuthController(db) {
   const apiIndexBugs = async (request, response) => {
     try {
       // get all features
@@ -12,7 +12,7 @@ export default function initBugsController(db) {
     }
   };
 
-  const create = async (request, response, next) => {
+  const create = async (request, response) => {
     // get data
     const {
       problem,
@@ -29,7 +29,7 @@ export default function initBugsController(db) {
         featureId,
       });
       console.log('Updated DB!');
-      // NEEDED TO USE THIS!
+      // terminate the  req-res cycle
       response.end();
     } catch (error) {
       console.error('!initBugsController.create Error', error);

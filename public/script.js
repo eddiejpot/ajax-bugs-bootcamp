@@ -8,10 +8,12 @@ const selectBugsParentDiv = document.querySelector('.bug-list');
 const buildBugsList = (allBugs, numberOfBugs) => {
   console.log('Building...');
   // Remove previous list if exist
-  const divToRemove = document.getElementsByClassName('bug-list-single-bug');
-  if (divToRemove.length > 0) {
+  if (selectBugsParentDiv.hasChildNodes()) {
     console.log('removing...');
-    divToRemove[0].remove();
+
+    while (selectBugsParentDiv.firstChild) {
+      selectBugsParentDiv.removeChild(selectBugsParentDiv.firstChild);
+    }
   }
   console.log('Building!');
   // create div for each bug
@@ -43,33 +45,34 @@ const buildBugsList = (allBugs, numberOfBugs) => {
   }
 };
 
-const updateAndRefreshBugsList = async (formData) => {
+const updateBugsListInDataBase = async (formData) => {
   try {
     // update form data
     console.log('Updating DB!');
-    console.log(formData);
-    const post = await axios.post('/api/bugs', formData);
-    console.log(post);
+    await axios.post('/api/bugs', formData);
+  } catch (error) {
+    console.error('Error in updateBugsListInDataBase', error);
+  }
+};
 
-    console.log('Updated!');
-    // CODE STOPS RUNNING HERE
-
+const refreshBugsListOnPage = async () => {
+  try {
     // get bug data
-    console.log('Refreshing Bugs List');
     const { data: { allBugs } } = await axios.get('/api/bugs');
+
     // get number of bugs
     const numberOfBugs = allBugs.length;
-    console.log('LETS SEE THE BUGS!');
+
+    console.log('ALL BUGS');
+    console.log(`Num of bugs: ${numberOfBugs}`);
     console.log(allBugs);
+
     // change bug counter
     selectBugCounter.innerHTML = numberOfBugs;
 
-    console.log('Building Bug list!');
-
     // build bugs list
     await buildBugsList(allBugs, numberOfBugs);
-
-    console.log('Refreshed!');
+    console.log('Built!!');
   } catch (error) {
     console.error('Error in updateBugsListInDatabase', error);
   }
@@ -129,23 +132,44 @@ const generatBugReportForm = async () => {
   form.appendChild(submitBtn);
 };
 
+const tellUserToLogIn = () => {
+  // input element
+  const message = document.createElement('p');
+  message.innerHTML = 'You need to log in!';
+  selectBugFormParentDiv.appendChild(message);
+};
+
 // EVENT LISTENER
 selectBugFormBtn.addEventListener('click', async () => {
-  await generatBugReportForm();
+  // check if user is logged in
+  const { data: isLoggedIn } = await axios.get('/auth');
+  if (!isLoggedIn) {
+    // if user is not logged in
+    tellUserToLogIn();
+  // if user is  logged in
+  } else {
+  // generate form
+    await generatBugReportForm();
 
-  // create event listener for bug submit button
-  const submitBtn = document.querySelector('.bug-form-submit-btn');
+    // create event listener for bug submit button
+    const submitBtn = document.querySelector('.bug-form-submit-btn');
 
-  submitBtn.addEventListener('click', () => {
+    submitBtn.addEventListener('click', async () => {
     // get form data
-    const formData = {
-      problem: document.getElementById('form-input-problem').value,
-      errorText: document.getElementById('form-input-error-text').value,
-      commit: document.getElementById('form-input-commit').value,
-      featureId: Number(document.getElementById('form-input-feature-id').value),
-    };
+      const formData = {
+        problem: document.getElementById('form-input-problem').value,
+        errorText: document.getElementById('form-input-error-text').value,
+        commit: document.getElementById('form-input-commit').value,
+        featureId: Number(document.getElementById('form-input-feature-id').value),
+      };
 
-    // update and refresh
-    updateAndRefreshBugsList(formData);
-  });
+      // update and refresh
+      // updateAndRefreshBugsList(formData);
+      await updateBugsListInDataBase(formData);
+      await refreshBugsListOnPage();
+    });
+  }
 });
+
+// When the page loads, retrieve the list of bugs and render them onto the page.
+refreshBugsListOnPage();
