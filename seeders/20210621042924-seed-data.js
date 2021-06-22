@@ -23,6 +23,7 @@ module.exports = {
   },
 
   down: async (queryInterface) => {
+    await queryInterface.bulkDelete('bugs', null, {});
     // Delete item before category records because items reference categories
     await queryInterface.bulkDelete('features', null, {});
   },

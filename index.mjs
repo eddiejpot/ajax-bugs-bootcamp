@@ -12,10 +12,10 @@ app.set('view engine', 'ejs');
 app.use(cookieParser());
 // Bind Express middleware to parse request bodies for POST requests
 app.use(express.urlencoded({ extended: false }));
-// Bind method override middleware to parse PUT and DELETE requests sent as POST requests
-app.use(methodOverride('_method'));
 // For Express to read data from our AJAX POST request
 app.use(express.json());
+// Bind method override middleware to parse PUT and DELETE requests sent as POST requests
+app.use(methodOverride('_method'));
 
 // Expose the files stored in the public folder
 app.use(express.static('public'));

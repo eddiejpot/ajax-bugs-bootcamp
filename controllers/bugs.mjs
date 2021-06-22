@@ -13,19 +13,24 @@ export default function initBugsController(db) {
   };
 
   const create = async (request, response, next) => {
+    // get data
+    const {
+      problem,
+      errorText,
+      commit,
+      featureId,
+    } = request.body;
     try {
-      // get data
-      const {
-        problem, error_text: errorText, commit, feature_id: featureId,
-      } = request.body;
-
       // add bug to DB
       await db.Bug.create({
         problem,
         errorText,
         commit,
-        featureId: Number(featureId),
+        featureId,
       });
+      console.log('Updated DB!');
+      // NEEDED TO USE THIS!
+      response.end();
     } catch (error) {
       console.error('!initBugsController.create Error', error);
     }
